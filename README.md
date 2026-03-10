@@ -1,6 +1,7 @@
 # STORE-ALMACEN
 Sistema web de gestión de almacén e inventario para instituciones educativas — permite registrar entradas/salidas, gestionar requisiciones, controlar stock y hacer seguimiento presupuestal por secciones y actividades.
-<img width="300" height="168" alt="logo_granadino-removebg-preview" src="https://github.com/user-attachments/assets/ef076bd2-409a-405e-96e3-5282d55a7a2b" />
+![CG](https://github.com/user-attachments/assets/f28b4137-76de-48d5-be33-05b9ab5cc218)
+
 # 🏫 StoreManager — Colegio Granadino
 <!-- LOGO / BANNER -->
 > Sistema web de gestión de almacén e inventario institucional — registra entradas y salidas, controla stock, procesa requisiciones y hace seguimiento presupuestal en tiempo real.
