@@ -1,0 +1,27 @@
+# 📋 PROMPT TÉCNICO COMPLETO — Sistema de Inventario Colegio Granadino
+
+---
+
+## 1. RESUMEN DEL PROYECTO
+
+Aplicación web de gestión de inventario y requisiciones para **Colegio Granadino**. Dos roles: **Administrador** (bodeguero) y **Usuario** (docente/coordinador). El sistema permite controlar entradas/salidas de inventario, procesar requisiciones internas y gestionar presupuestos por sección.
+
+---
+
+## 2. STACK TECNOLÓGICO (100% compatible con Vercel Free Tier)
+
+```
+Framework:        Next.js 14 (App Router)
+Base de datos:    Vercel Postgres (powered by Neon) — 256 MB gratis
+ORM:              Prisma 5
+Auth:             NextAuth.js v5 (credentials + Google OAuth)
+Almacenamiento:   Vercel Blob (imágenes de ítems) — 512 MB gratis
+Estilos:          Tailwind CSS v3
+Componentes:      Shadcn/ui
+Estado cliente:   Zustand
+Formularios:      React Hook Form + Zod
+Fechas:           date-fns
+Tablas:           TanStack Table v8
+Deploy:           Vercel (CI/CD automático desde GitHub)
+Seed de datos:    Script Prisma seed con datos reales provistos
+```

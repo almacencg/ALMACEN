@@ -1,0 +1,154 @@
+// prisma/schema.prisma — Colegio Granadino Inventario
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  password     String?
+  image        String?
+  role         Role          @default(USER)
+  section      String?
+  budgetTotal  Float         @default(0)
+  budgetUsed   Float         @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  requisitions Requisition[]
+  accounts     Account[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique
+  items Item[]
+
+  @@map("categories")
+}
+
+model Item {
+  id               String            @id @default(cuid())
+  code             String            @unique  // Código SAP: AL-PP1265
+  name             String
+  unit             String            @default("UND")
+  stock            Int               @default(0)
+  minStock         Int               @default(5)
+  price            Float
+  photoUrl         String?
+  source           String?
+  categoryId       String?
+  category         Category?         @relation(fields: [categoryId], references: [id])
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  inputs           Input[]
+  outputs          Output[]
+  requisitionItems RequisitionItem[]
+
+  @@map("items")
+}
+
+model Input {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id])
+  quantity  Int
+  price     Float
+  source    String?
+  photoUrl  String?
+  date      DateTime @default(now())
+  createdBy String?
+
+  @@map("inputs")
+}
+
+model Output {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id])
+  quantity  Int
+  price     Float
+  date      DateTime @default(now())
+  createdBy String?
+  activity  String?
+  section   String?
+
+  @@map("outputs")
+}
+
+model Requisition {
+  id        String            @id @default(cuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id])
+  type      RequisitionType   @default(NORMAL)
+  status    RequisitionStatus @default(PENDING)
+  activity  String?
+  section   String?
+  budget    Float?
+  docUrl    String?
+  notes     String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  items     RequisitionItem[]
+
+  @@map("requisitions")
+}
+
+model RequisitionItem {
+  id            String      @id @default(cuid())
+  requisitionId String
+  requisition   Requisition @relation(fields: [requisitionId], references: [id], onDelete: Cascade)
+  itemId        String?
+  item          Item?       @relation(fields: [itemId], references: [id])
+  itemName      String
+  quantity      Int
+  size          String?
+  color         String?
+  details       String?
+  photoUrl      String?
+
+  @@map("requisition_items")
+}
+
+enum RequisitionType {
+  NORMAL
+  SPECIAL
+}
+
+enum RequisitionStatus {
+  PENDING
+  CANCELLED
+  IN_PROGRESS
+  APPROVED
+  READY
+  ISSUED
+}

@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: verificar si el usuario está autenticado
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Helper: verificar si el usuario es admin
+    function isAdmin() {
+      return isAuth() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Helper: verificar que el documento pertenece al usuario
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    // ─── USERS ────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isAuth();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ─── ITEMS (Inventario) ───────────────────────────────────────────────────
+    match /items/{itemId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // ─── INPUTS ───────────────────────────────────────────────────────────────
+    match /inputs/{docId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // ─── OUTPUTS ──────────────────────────────────────────────────────────────
+    match /outputs/{docId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // ─── REQUISITIONS ─────────────────────────────────────────────────────────
+    match /requisitions/{docId} {
+      allow read: if isAuth();
+      allow create: if isAuth();
+      // Solo admin puede cambiar el status
+      allow update: if isAdmin() ||
+        (isOwner(resource.data.userId) && resource.data.status == 'PENDING');
+      allow delete: if isAdmin();
+    }
+
+    // ─── SPECIAL REQUISITIONS ─────────────────────────────────────────────────
+    match /specialRequisitions/{docId} {
+      allow read: if isAuth();
+      allow create: if isAuth();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}
