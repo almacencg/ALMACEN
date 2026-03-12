@@ -1,3 +1,202 @@
+# 🏫 StoreManager — Colegio Granadino
+<!-- LOGO / BANNER -->
+> Institutional warehouse and inventory management web system — registers inputs/outputs, controls stock, processes requisitions and tracks budget in real time.
+
+---
+
+## 📌 Description
+
+**StoreManager** is a web-based inventory and requisition management platform developed for **Colegio Granadino**. It allows administrators and users to organize the institutional warehouse's material flow through an intuitive dashboard, with stock control, low inventory alerts, budget tracking by activity and section, and a complete requisition system with trackable statuses.
+
+The system supports **two languages** (Spanish / English) and is designed to be used from any device.
+
+---
+
+## ✨ Main Features
+
+- 📥 **Register Input** — Add items with stock, price, date, source and attached photo
+- 📤 **Register Output** — Dispatch items with quantity control per item
+- 📋 **Requisitions** — Create, track and approve material requests
+- ⭐ **Special Requisitions** — Extended flow with alternative budget selection
+- 🏪 **Store Management** — Catalog view with *Out of Stock* and *Low Stock* alerts
+- 📊 **Input / Output History** — Query with date filters and search
+- 🕓 **Requisition History** — Full traceability with filters by doc, date and status
+- 💰 **Budget Control** — Visual indicator of consumed vs. total assigned budget
+- 🔔 **Requisition Statuses** — Pending → In Progress → Approved → Issued / Cancelled
+- 🌐 **Multilanguage** — Spanish and English support across all views
+- 📱 **Responsive Design** — Adapted for desktop and mobile devices
+
+---
+
+## 🖼️ System Views
+
+| Login | Admin Dashboard | Store Management |
+|---|---|---|
+| Access screen with validation and Google Auth | Latest requisitions and low stock alerts | Catalog with Out of Stock / Low Stock indicators |
+
+| Register Input | Register Output | Input History |
+|---|---|---|
+| Add items with photo and price | Dispatch with quantity selector | Table with date filter and search |
+
+| Requisition | Special Requisition | Requisition History |
+|---|---|---|
+| Request with activity, section and budget | Special flow with alternative budget | Query with status per item |
+
+---
+
+## 🏗️ Architecture
+
+```
+StoreManager/
+├── frontend/          # React + TypeScript + TailwindCSS
+├── backend/           # Node.js + NestJS (RESTful API)
+├── database/          # PostgreSQL + Redis (cache/sessions)
+├── docs/              # Technical documentation and diagrams
+└── tests/             # Test cases and validations
+```
+
+### Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React, TypeScript, TailwindCSS |
+| Backend | Node.js, NestJS |
+| Database | PostgreSQL |
+| ORM | Prisma / TypeORM |
+| Authentication | JWT + Google OAuth |
+| Cache | Redis |
+| Real-time | Socket.io |
+
+---
+
+## 🗃️ System Entities
+
+| Entity | Description |
+|---|---|
+| Users | Roles: Administrator / Standard User |
+| Items | Warehouse products with stock, price and photo |
+| Inputs | Merchandise entry records |
+| Outputs | Merchandise dispatch records |
+| Requisitions | Material requests with approval workflow |
+| Budgets | Expense control by activity and section |
+| History | Full traceability of movements |
+
+---
+
+## 🔄 Requisition Status Flow
+
+```
+PENDING  →  IN PROGRESS  →  APPROVED  →  READY  →  ISSUED
+                  ↓
+              CANCELLED
+```
+
+---
+
+## 👥 Roles & Permissions
+
+| Role | Main Permissions |
+|---|---|
+| **Administrator** | Full control: inputs, outputs, history, requisitions, store management |
+| **User** | Submit requisitions, view own history, budget tracking |
+
+---
+
+## 🚀 Installation & Usage
+
+### Prerequisites
+
+- Node.js >= 18.x
+- PostgreSQL >= 14
+- Redis >= 6
+
+### Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/store-manager.git
+cd store-manager
+
+# 2. Install backend dependencies
+cd backend
+npm install
+cp .env.example .env   # Configure environment variables
+
+# 3. Install frontend dependencies
+cd ../frontend
+npm install
+
+# 4. Run database migrations
+cd ../backend
+npx prisma migrate dev
+
+# 5. Start in development mode
+npm run dev            # Backend at http://localhost:3001
+cd ../frontend
+npm run dev            # Frontend at http://localhost:3000
+```
+
+---
+
+## ⚠️ System Alerts
+
+The system automatically notifies when:
+
+- 🔴 **Out of Stock** — Item has no available units
+- 🟡 **Low Stock** — Item stock is below the configured minimum
+- 🔴 **User Limit Reached** — The user has reached their requisition limit
+
+---
+
+## 📄 Documentation
+
+The project includes technical documentation under the **IEEE 830** standard (Software Requirements Specification), covering:
+
+- Introduction, objectives and scope
+- General product description
+- Functional and non-functional requirements
+- Test cases and validation
+- Prototypes and flow diagrams
+
+See the `/docs` folder for the full document.
+
+---
+
+## 📋 Project Status
+
+| Phase | Status |
+|---|---|
+| Documentation | ✅ Completed |
+| UI/UX Design | ✅ Completed |
+| MVP / Prototype | 🔄 In progress |
+| Testing | ⏳ Pending |
+| Deployment | ⏳ Pending |
+
+---
+
+## 🤝 Contributing
+
+1. Fork the project
+2. Create your feature branch: `git checkout -b feature/new-feature`
+3. Commit your changes: `git commit -m 'feat: add new feature'`
+4. Push the branch: `git push origin feature/new-feature`
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project was developed as an institutional training deliverable for **Colegio Granadino**, Colombia.
+
+---
+
+*Developed with ❤️ for Colegio Granadino · Colombia*
+
+
+
+
+
+
 # STORE-ALMACEN
 Sistema web de gestión de almacén e inventario para instituciones educativas — permite registrar entradas/salidas, gestionar requisiciones, controlar stock y hacer seguimiento presupuestal por secciones y actividades.
 ![CG](https://github.com/user-attachments/assets/f28b4137-76de-48d5-be33-05b9ab5cc218)
@@ -191,6 +390,9 @@ Consulta la carpeta `/docs` para acceder al documento completo.
 ## 📝 Licencia
 
 Este proyecto fue desarrollado como evidencia de formación institucional para el **Colegio Granadino**, Colombia.
+
+
+
 
 ---
 
