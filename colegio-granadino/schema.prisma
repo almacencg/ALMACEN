@@ -5,9 +5,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -16,7 +15,7 @@ model User {
   email        String        @unique
   password     String?
   image        String?
-  role         Role          @default(USER)
+  role         String        @default("USER")
   section      String?
   budgetTotal  Float         @default(0)
   budgetUsed   Float         @default(0)
@@ -43,10 +42,7 @@ model Account {
   @@map("accounts")
 }
 
-enum Role {
-  ADMIN
-  USER
-}
+// Enum Role removed for SQLite support
 
 model Category {
   id    String @id @default(cuid())
@@ -109,8 +105,8 @@ model Requisition {
   id        String            @id @default(cuid())
   userId    String
   user      User              @relation(fields: [userId], references: [id])
-  type      RequisitionType   @default(NORMAL)
-  status    RequisitionStatus @default(PENDING)
+  type      String            @default("NORMAL")
+  status    String            @default("PENDING")
   activity  String?
   section   String?
   budget    Float?
@@ -139,16 +135,4 @@ model RequisitionItem {
   @@map("requisition_items")
 }
 
-enum RequisitionType {
-  NORMAL
-  SPECIAL
-}
-
-enum RequisitionStatus {
-  PENDING
-  CANCELLED
-  IN_PROGRESS
-  APPROVED
-  READY
-  ISSUED
-}
+// SQLite doesn't support enums, so we've converted them to strings.

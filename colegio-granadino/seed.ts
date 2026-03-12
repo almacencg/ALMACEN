@@ -2,7 +2,7 @@
 // Generado automáticamente desde datos reales — Colegio Granadino — Feb 2026
 // 172 ítems · 102 funcionarios · 1020 movimientos históricos
 
-import { PrismaClient, Role, RequisitionStatus, RequisitionType } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
@@ -67,7 +67,7 @@ async function main() {
     create: {
       name: 'SERGIO FARFAN RICO',
       email: 'admin@colegiogranadino.edu.co',
-      password: adminPwd, role: Role.ADMIN, section: 'Almacen',
+      password: adminPwd, role: "ADMIN", section: 'Almacen',
       budgetTotal: 0, budgetUsed: 0,
     },
   })
@@ -186,7 +186,7 @@ async function main() {
       update: {},
       create: {
         name: u.name, email: u.email, password: userPwd,
-        role: Role.USER, section: u.section,
+        role: "USER", section: u.section,
         budgetTotal: 5000000, budgetUsed: 0,
       },
     })
@@ -386,15 +386,15 @@ async function main() {
   console.log(`✅ ${itemsData.length} ítems de inventario creados`)
 
   // ─── REQUISICIONES DE EJEMPLO ───────────────────────────────
-  const firstUser = await prisma.user.findFirst({ where: { role: Role.USER } })
+  const firstUser = await prisma.user.findFirst({ where: { role: "USER" } })
   if (firstUser) {
     await prisma.requisition.createMany({
       data: [
-        { userId: firstUser.id, type: RequisitionType.NORMAL, status: RequisitionStatus.PENDING, activity: 'Papeleria', section: firstUser.section ?? 'General', budget: 150000 },
-        { userId: firstUser.id, type: RequisitionType.NORMAL, status: RequisitionStatus.APPROVED, activity: 'Estimulacion Temprana', section: firstUser.section ?? 'General', budget: 80000 },
-        { userId: firstUser.id, type: RequisitionType.SPECIAL, status: RequisitionStatus.IN_PROGRESS, activity: 'Festival del Folclor', section: firstUser.section ?? 'General', budget: 500000 },
-        { userId: firstUser.id, type: RequisitionType.NORMAL, status: RequisitionStatus.ISSUED, activity: 'STUCO', section: firstUser.section ?? 'General', budget: 200000 },
-        { userId: firstUser.id, type: RequisitionType.NORMAL, status: RequisitionStatus.CANCELLED, activity: 'Papeleria', section: firstUser.section ?? 'General', budget: 30000 },
+        { userId: firstUser.id, type: "NORMAL", status: "PENDING", activity: 'Papeleria', section: firstUser.section ?? 'General', budget: 150000 },
+        { userId: firstUser.id, type: "NORMAL", status: "APPROVED", activity: 'Estimulacion Temprana', section: firstUser.section ?? 'General', budget: 80000 },
+        { userId: firstUser.id, type: "SPECIAL", status: "IN_PROGRESS", activity: 'Festival del Folclor', section: firstUser.section ?? 'General', budget: 500000 },
+        { userId: firstUser.id, type: "NORMAL", status: "ISSUED", activity: 'STUCO', section: firstUser.section ?? 'General', budget: 200000 },
+        { userId: firstUser.id, type: "NORMAL", status: "CANCELLED", activity: 'Papeleria', section: firstUser.section ?? 'General', budget: 30000 },
       ]
     })
     console.log('✅ 5 requisiciones de ejemplo creadas (PENDING, APPROVED, IN_PROGRESS, ISSUED, CANCELLED)')

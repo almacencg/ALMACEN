@@ -3,38 +3,39 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { logout } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 const PRIMARY = "#6B0F2B";
 const DARK = "#4a0a1e";
 const TEXT = "#ffffff";
 
-const ADMIN_NAV = [
-  { label: "REGISTER OUTPUT",     path: "/admin/register-output" },
-  { label: "REGISTER INPUT",      path: "/admin/register-input" },
-  { label: "INPUTS HISTORY",      path: "/admin/inputs-history" },
-  { label: "OUTPUTS HISTORY",     path: "/admin/outputs-history" },
-  { label: "REQUISITION HISTORY", path: "/admin/requisition-history" },
-  { label: "REQUISITIONS",        path: "/admin/requisitions" },
-  { label: "MANAGE STORE",        path: "/admin/manage-store" },
-];
-
-const USER_NAV = [
-  { label: "SUBMIT REQUISITION",  path: "/user/submit-requisition" },
-  { label: "VIEW HISTORY",        path: "/user/view-history" },
-  { label: "SPECIAL REQUISITION", path: "/user/special-requisition" },
-];
-
 export default function Layout({ children, showBudget = false, budget = null, spent = null }) {
   const { user, profile, isAdmin } = useAuth();
+  const { lang, setLang, t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const [time, setTime] = useState(new Date());
-  const [lang, setLang] = useState("es");
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const ADMIN_NAV = [
+    { label: t("nav.register_output"),     path: "/admin/register-output" },
+    { label: t("nav.register_input"),      path: "/admin/register-input" },
+    { label: t("nav.inputs_history"),      path: "/admin/inputs-history" },
+    { label: t("nav.outputs_history"),     path: "/admin/outputs-history" },
+    { label: t("nav.requisition_history"), path: "/admin/requisition-history" },
+    { label: t("nav.requisitions"),        path: "/admin/requisitions" },
+    { label: t("nav.manage_store"),        path: "/admin/manage-store" },
+  ];
+
+  const USER_NAV = [
+    { label: t("nav.submit_requisition"),  path: "/user/submit-requisition" },
+    { label: t("nav.view_history"),        path: "/user/view-history" },
+    { label: t("nav.special_requisition"), path: "/user/special-requisition" },
+  ];
 
   const navItems = isAdmin ? ADMIN_NAV : USER_NAV;
   const mainPath = isAdmin ? "/admin/dashboard" : "/user/dashboard";
@@ -45,10 +46,10 @@ export default function Layout({ children, showBudget = false, budget = null, sp
   };
 
   const formatTime = (date) =>
-    date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+    date.toLocaleTimeString(lang === "es" ? "es-ES" : "en-US", { hour: "2-digit", minute: "2-digit" });
 
   const formatDate = (date) =>
-    date.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+    date.toLocaleDateString(lang === "es" ? "es-ES" : "en-US", { day: "2-digit", month: "2-digit", year: "numeric" });
 
   const getDayName = (date) =>
     date.toLocaleDateString(lang === "es" ? "es-ES" : "en-US", { weekday: "long" })
@@ -68,12 +69,12 @@ export default function Layout({ children, showBudget = false, budget = null, sp
             }
           </div>
           <span style={styles.userName}>{profile?.displayName || user?.displayName || "USER NAME"}</span>
-          <button onClick={handleLogout} style={styles.logoutBtn}>LOGOUT</button>
+          <button onClick={handleLogout} style={styles.logoutBtn}>{t("nav.logout")}</button>
         </div>
 
         {showBudget && budget !== null && (
           <div style={styles.budgetContainer}>
-            <span style={styles.budgetLabel}>BUDGET:</span>
+            <span style={styles.budgetLabel}>{t("common.budget")}:</span>
             <div style={styles.budgetBar}>
               <div style={{ ...styles.budgetFill, width: `${Math.min(budgetPercent, 100)}%` }} />
             </div>
@@ -97,29 +98,31 @@ export default function Layout({ children, showBudget = false, budget = null, sp
       <div style={styles.body}>
         {/* SIDEBAR */}
         <nav style={styles.sidebar}>
+          <div 
+            onClick={() => navigate(mainPath)}
+            style={{ 
+              ...styles.navItem, 
+              background: location.pathname === mainPath ? DARK : "transparent",
+              fontWeight: "bold",
+              borderBottom: "1px solid rgba(255,255,255,0.1)",
+              marginBottom: 10
+            }}
+          >
+            {t("nav.dashboard")}
+          </div>
+
           {navItems.map(item => {
             const active = location.pathname === item.path;
             return (
-              <button
-                key={item.path}
+              <div 
+                key={item.path} 
                 onClick={() => navigate(item.path)}
-                style={{
-                  ...styles.navItem,
-                  background: active ? DARK : "transparent",
-                  borderLeft: active ? `4px solid #fff` : "4px solid transparent",
-                }}
+                style={{ ...styles.navItem, background: active ? DARK : "transparent" }}
               >
                 {item.label}
-              </button>
+              </div>
             );
           })}
-
-          <div style={{ flex: 1 }} />
-
-          <button onClick={() => navigate(mainPath)} style={styles.mainBtn}>
-            <span style={styles.mainIcon}>⬅</span>
-            <span>MAIN</span>
-          </button>
         </nav>
 
         {/* CONTENT */}
@@ -132,157 +135,23 @@ export default function Layout({ children, showBudget = false, budget = null, sp
 }
 
 const styles = {
-  shell: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100vh",
-    fontFamily: "'Segoe UI', sans-serif",
-    background: PRIMARY,
-  },
-  topbar: {
-    background: PRIMARY,
-    display: "flex",
-    alignItems: "center",
-    padding: "8px 20px",
-    gap: 16,
-    minHeight: 72,
-    borderBottom: `2px solid ${DARK}`,
-  },
-  userInfo: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    flex: 1,
-  },
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: "50%",
-    background: "rgba(255,255,255,0.2)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  userName: {
-    color: TEXT,
-    fontWeight: "700",
-    fontSize: 16,
-    letterSpacing: 0.5,
-  },
-  logoutBtn: {
-    background: "none",
-    border: "none",
-    color: TEXT,
-    fontWeight: "700",
-    cursor: "pointer",
-    fontSize: 14,
-    opacity: 0.8,
-    letterSpacing: 1,
-  },
-  budgetContainer: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    flex: 1,
-  },
-  budgetLabel: {
-    color: TEXT,
-    fontSize: 13,
-    fontWeight: "700",
-    letterSpacing: 1,
-  },
-  budgetBar: {
-    width: 80,
-    height: 20,
-    background: "#8B0000",
-    borderRadius: 2,
-    overflow: "hidden",
-  },
-  budgetFill: {
-    height: "100%",
-    background: "#c00",
-    transition: "width 0.5s ease",
-  },
-  budgetText: {
-    background: TEXT,
-    color: "#333",
-    padding: "2px 8px",
-    borderRadius: 4,
-    fontSize: 13,
-    fontWeight: "700",
-  },
-  clockArea: {
-    display: "flex",
-    gap: 16,
-    alignItems: "center",
-  },
-  clockItem: {
-    color: TEXT,
-    fontWeight: "700",
-    fontSize: 14,
-    letterSpacing: 0.5,
-  },
-  flags: {
-    display: "flex",
-    gap: 6,
-    alignItems: "center",
-  },
-  flagBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    fontSize: 30,
-    lineHeight: 1,
-    padding: 0,
-    transition: "opacity 0.2s",
-  },
-  body: {
-    display: "flex",
-    flex: 1,
-    overflow: "hidden",
-  },
-  sidebar: {
-    width: 290,
-    background: PRIMARY,
-    display: "flex",
-    flexDirection: "column",
-    padding: "16px 0",
-    gap: 4,
-    flexShrink: 0,
-  },
-  navItem: {
-    color: TEXT,
-    fontWeight: "700",
-    fontSize: 14,
-    letterSpacing: 1,
-    padding: "18px 24px",
-    border: "none",
-    cursor: "pointer",
-    textAlign: "left",
-    transition: "background 0.15s",
-    width: "100%",
-  },
-  mainBtn: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    color: TEXT,
-    fontWeight: "700",
-    fontSize: 16,
-    letterSpacing: 1,
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    padding: "16px 24px",
-    marginTop: 8,
-  },
-  mainIcon: {
-    fontSize: 24,
-  },
-  content: {
-    flex: 1,
-    background: "#e8e8e8",
-    overflow: "auto",
-  },
+  shell: { display: "flex", flexDirection: "column", height: "100vh", fontFamily: "Segoe UI, sans-serif", overflow: "hidden" },
+  topbar: { background: PRIMARY, height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", color: TEXT, boxShadow: "0 2px 5px rgba(0,0,0,0.2)", zIndex: 10 },
+  userInfo: { display: "flex", alignItems: "center", gap: 12 },
+  avatar: { width: 36, height: 36, background: DARK, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" },
+  userName: { fontSize: 14, fontWeight: "600", letterSpacing: 0.5 },
+  logoutBtn: { background: DARK, color: TEXT, border: "none", padding: "6px 12px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: "700" },
+  clockArea: { display: "flex", gap: 20 },
+  clockItem: { fontSize: 13, fontWeight: "600", opacity: 0.9 },
+  flags: { display: "flex", gap: 10 },
+  flagBtn: { background: "none", border: "none", fontSize: 22, cursor: "pointer", padding: 0 },
+  body: { display: "flex", flex: 1, overflow: "hidden" },
+  sidebar: { width: 240, background: PRIMARY, padding: "20px 0", display: "flex", flexDirection: "column" },
+  navItem: { padding: "14px 24px", color: TEXT, cursor: "pointer", fontSize: 13, letterSpacing: 0.5, transition: "background 0.2s" },
+  content: { flex: 1, background: "#f5f7fa", overflowY: "auto" },
+  budgetContainer: { display: "flex", alignItems: "center", gap: 10, flex: 1, justifyContent: "center", maxWidth: 400 },
+  budgetLabel: { fontSize: 11, fontWeight: "800", opacity: 0.8 },
+  budgetBar: { flex: 1, height: 8, background: DARK, borderRadius: 4, overflow: "hidden" },
+  budgetFill: { height: "100%", background: "#4CAF50" },
+  budgetText: { fontSize: 11, fontWeight: "700" }
 };

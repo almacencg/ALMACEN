@@ -2,29 +2,28 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { LanguageProvider } from "./context/LanguageContext";
 
 // Pages
 import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-
-// Lazy load para el resto de páginas (las irás creando)
-// import RegisterInput   from "./pages/admin/RegisterInput";
-// import RegisterOutput  from "./pages/admin/RegisterOutput";
-// import InputsHistory   from "./pages/admin/InputsHistory";
-// import OutputsHistory  from "./pages/admin/OutputsHistory";
-// import RequisitionHistory from "./pages/admin/RequisitionHistory";
-// import AdminRequisitions  from "./pages/admin/AdminRequisitions";
-// import ManageStore        from "./pages/admin/ManageStore";
-// import UserDashboard      from "./pages/user/UserDashboard";
-// import SubmitRequisition  from "./pages/user/SubmitRequisition";
-// import ViewHistory        from "./pages/user/ViewHistory";
-// import SpecialRequisition from "./pages/user/SpecialRequisition";
+import RegisterInput   from "./pages/admin/RegisterInput";
+import RegisterOutput  from "./pages/admin/RegisterOutput";
+import InputsHistory   from "./pages/admin/InputsHistory";
+import OutputsHistory  from "./pages/admin/OutputsHistory";
+import RequisitionHistory from "./pages/admin/RequisitionHistory";
+import AdminRequisitions  from "./pages/admin/AdminRequisitions";
+import ManageStore        from "./pages/admin/ManageStore";
+import UserDashboard      from "./pages/user/UserDashboard";
+import SubmitRequisition  from "./pages/user/SubmitRequisition";
+import ViewHistory        from "./pages/user/ViewHistory";
+import SpecialRequisition from "./pages/user/SpecialRequisition";
 
 function PrivateRoute({ children, requireAdmin = false }) {
   const { user, profile, loading } = useAuth();
   if (loading) return <LoadingScreen />;
   if (!user) return <Navigate to="/login" replace />;
-  if (requireAdmin && profile?.role !== "admin") return <Navigate to="/user/submit-requisition" replace />;
+  if (requireAdmin && profile?.role !== "admin") return <Navigate to="/user/dashboard" replace />;
   return children;
 }
 
@@ -52,7 +51,7 @@ function RootRedirect() {
   if (loading) return <LoadingScreen />;
   if (!user) return <Navigate to="/login" replace />;
   if (profile?.role === "admin") return <Navigate to="/admin/dashboard" replace />;
-  return <Navigate to="/user/submit-requisition" replace />;
+  return <Navigate to="/user/dashboard" replace />;
 }
 
 function AppRoutes() {
@@ -66,36 +65,39 @@ function AppRoutes() {
         <PrivateRoute requireAdmin><AdminDashboard /></PrivateRoute>
       } />
       <Route path="/admin/register-input" element={
-        <PrivateRoute requireAdmin><div style={placeholderStyle}>Register Input — Coming Soon</div></PrivateRoute>
+        <PrivateRoute requireAdmin><RegisterInput /></PrivateRoute>
       } />
       <Route path="/admin/register-output" element={
-        <PrivateRoute requireAdmin><div style={placeholderStyle}>Register Output — Coming Soon</div></PrivateRoute>
+        <PrivateRoute requireAdmin><RegisterOutput /></PrivateRoute>
       } />
       <Route path="/admin/inputs-history" element={
-        <PrivateRoute requireAdmin><div style={placeholderStyle}>Inputs History — Coming Soon</div></PrivateRoute>
+        <PrivateRoute requireAdmin><InputsHistory /></PrivateRoute>
       } />
       <Route path="/admin/outputs-history" element={
-        <PrivateRoute requireAdmin><div style={placeholderStyle}>Outputs History — Coming Soon</div></PrivateRoute>
+        <PrivateRoute requireAdmin><OutputsHistory /></PrivateRoute>
       } />
       <Route path="/admin/requisition-history" element={
-        <PrivateRoute requireAdmin><div style={placeholderStyle}>Requisition History — Coming Soon</div></PrivateRoute>
+        <PrivateRoute requireAdmin><RequisitionHistory /></PrivateRoute>
       } />
       <Route path="/admin/requisitions" element={
-        <PrivateRoute requireAdmin><div style={placeholderStyle}>Requisitions — Coming Soon</div></PrivateRoute>
+        <PrivateRoute requireAdmin><AdminRequisitions /></PrivateRoute>
       } />
       <Route path="/admin/manage-store" element={
-        <PrivateRoute requireAdmin><div style={placeholderStyle}>Manage Store — Coming Soon</div></PrivateRoute>
+        <PrivateRoute requireAdmin><ManageStore /></PrivateRoute>
       } />
 
       {/* ── USER ROUTES ── */}
+      <Route path="/user/dashboard" element={
+        <PrivateRoute><UserDashboard /></PrivateRoute>
+      } />
       <Route path="/user/submit-requisition" element={
-        <PrivateRoute><div style={placeholderStyle}>Submit Requisition — Coming Soon</div></PrivateRoute>
+        <PrivateRoute><SubmitRequisition /></PrivateRoute>
       } />
       <Route path="/user/view-history" element={
-        <PrivateRoute><div style={placeholderStyle}>View History — Coming Soon</div></PrivateRoute>
+        <PrivateRoute><ViewHistory /></PrivateRoute>
       } />
       <Route path="/user/special-requisition" element={
-        <PrivateRoute><div style={placeholderStyle}>Special Requisition — Coming Soon</div></PrivateRoute>
+        <PrivateRoute><SpecialRequisition /></PrivateRoute>
       } />
 
       <Route path="*" element={<Navigate to="/" replace />} />
@@ -103,22 +105,14 @@ function AppRoutes() {
   );
 }
 
-const placeholderStyle = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  height: "100%",
-  fontSize: 18,
-  color: "#999",
-  fontFamily: "Segoe UI, sans-serif",
-};
-
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }
