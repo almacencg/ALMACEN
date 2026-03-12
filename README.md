@@ -1,7 +1,7 @@
 # 🏫 StoreManager — Colegio Granadino
 <!-- LOGO / BANNER -->
 > Institutional warehouse and inventory management web system — registers inputs/outputs, controls stock, processes requisitions and tracks budget in real time.
-
+![CG](https://github.com/user-attachments/assets/f28b4137-76de-48d5-be33-05b9ab5cc218)
 ---
 
 ## 📌 Description
